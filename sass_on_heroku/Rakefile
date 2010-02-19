@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake/gempackagetask'
 require 'rake/testtask'
 
-require 'lib/sass_on_heroku/version'
+require 'lib/version'
 
 spec = Gem::Specification.new do |s|
   s.name             = 'sass-on-heroku'

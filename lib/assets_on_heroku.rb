@@ -32,13 +32,13 @@ module AssetsOnHeroku
     end
     
     def setup_rails
-      ActionView::Helpers::AssetTagHelper.module_eval do
+      ActionView::Helpers::AssetTagHelper.module_eval %{
         def write_asset_file_contents_with_heroku(broken_joined_asset_path, asset_paths)
-          fixed_joined_asset_path = broken_joined_asset_path.sub("public", @root)
+          fixed_joined_asset_path = broken_joined_asset_path.sub("public", "#{@root}")
           write_asset_file_contents_without_heroku(fixed_joined_asset_path, asset_paths)
         end
         alias_method_chain :write_asset_file_contents, :heroku
-      end if defined?(ActionView::Helpers::AssetTagHelper)
+      } if defined?(ActionView::Helpers::AssetTagHelper)
     end
     
     def setup_merb

@@ -1,22 +1,10 @@
 module AssetsOnHeroku
-  class Rack
-    def initialize(app)
-      @app = app
+  class Rack < ::Rack::Static
+    def initialize(app, options = { :urls => ["/stylesheets", "/javascripts"], :root => "tmp/public" })
+      @root = options[:root]
       setup
-    end
-    
-    def call(env)
-      root = "tmp/public"
-      path = ::Rack::Request.new(env).path
-      
-      is_stylesheet_request = path.start_with?("/stylesheets/") && path.end_with?(".css")
-      is_javascript_request = path.start_with?("/javascripts/") && path.end_with?(".js")
-      
-      if is_stylesheet_request || is_javascript_request
-        ::Rack::File.new(root).call(env)
-      else
-        @app.call(env)
-      end
+
+      super(app, options)
     end
     
     private 
@@ -33,12 +21,12 @@ module AssetsOnHeroku
     
     def setup_heroku
       require "fileutils"
-      FileUtils.mkdir_p("tmp/public")
+      FileUtils.mkdir_p(@root)
     end
     
     def setup_sass      
       Sass::Plugin.options = {
-        :css_location      => "tmp/public/stylesheets",
+        :css_location      => "#{root}/stylesheets",
         :template_location => "public/stylesheets/sass"
       } if defined?(Sass::Plugin)
     end
@@ -46,7 +34,7 @@ module AssetsOnHeroku
     def setup_rails
       ActionView::Helpers::AssetTagHelper.module_eval do
         def write_asset_file_contents_with_heroku(broken_joined_asset_path, asset_paths)
-          fixed_joined_asset_path = broken_joined_asset_path.sub("public", "tmp/public")
+          fixed_joined_asset_path = broken_joined_asset_path.sub("public", @root)
           write_asset_file_contents_without_heroku(fixed_joined_asset_path, asset_paths)
         end
         alias_method_chain :write_asset_file_contents, :heroku

@@ -8,6 +8,7 @@ begin
     gemspec.homepage = "http://github.com/ncr/assets_on_heroku"
     gemspec.authors = ["Jacek Becela", "Tomasz Mazur"]
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end

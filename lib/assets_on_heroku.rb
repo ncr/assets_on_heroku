@@ -2,10 +2,7 @@ module AssetsOnHeroku
   class Rack
     def initialize(app)
       @app = app
-      
-      setup_sass
-      setup_rails
-      setup_merb
+      setup
     end
     
     def call(env)
@@ -23,6 +20,21 @@ module AssetsOnHeroku
     end
     
     private 
+
+    def setup
+      unless defined?(@@setup_finished)
+        setup_heroku
+        setup_sass
+        setup_rails
+        setup_merb
+      end
+      @@setup_finished = true
+    end
+    
+    def setup_heroku
+      require "fileutils"
+      FileUtils.mkdir_p("tmp/public")
+    end
     
     def setup_sass      
       Sass::Plugin.options = {

@@ -24,11 +24,11 @@ module AssetsOnHeroku
       FileUtils.mkdir_p(@root)
     end
     
-    def setup_sass      
-      Sass::Plugin.options = {
-        :css_location      => "#{root}/stylesheets",
-        :template_location => "public/stylesheets/sass"
-      } if defined?(Sass::Plugin)
+    def setup_sass
+      if defined?(Sass::Plugin)
+        Sass::Plugin.options[:css_location] = "#{@root}/stylesheets"
+        Sass::Plugin.options[:template_location] ||= "public/stylesheets/sass" # Make template_location overridable
+      end
     end
     
     def setup_rails

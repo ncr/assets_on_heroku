@@ -7,6 +7,8 @@ begin
     gemspec.email = "jacek.becela@gmail.com"
     gemspec.homepage = "http://github.com/ncr/assets_on_heroku"
     gemspec.authors = ["Jacek Becela", "Tomasz Mazur"]
+    gem.add_dependency "rack"
+    gem.add_development_dependency "rack-test"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
